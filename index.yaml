@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  kivert:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-06-20T13:21:08.642074108Z"
+    description: A Kubernetes pod-restart alerting controller that watches pod restarts
+      and sends alerts.
+    digest: ad25525af7e97bb684557673484bc96782cd89221c077a0c60bfde5e426fbf3a
+    name: kivert
+    type: application
+    urls:
+    - https://colt005.github.io/kivert/kivert-1.0.0.tgz
+    version: 1.0.0
+generated: "2026-06-20T13:21:08.641588882Z"
