@@ -73,6 +73,8 @@ jobs:
         run: |
           mkdir -p /tmp/deploy-charts
           helm package charts/kivert -d /tmp/deploy-charts
+          cp README.md /tmp/README.md
+          cp index.html /tmp/index.html
 
       - name: Checkout gh-pages
         run: |
@@ -87,6 +89,8 @@ jobs:
       - name: Update Helm Repository Index
         run: |
           cp -r /tmp/deploy-charts/* .
+          cp /tmp/README.md README.md
+          cp /tmp/index.html index.html
           helm repo index . --url https://colt005.github.io/kivert
           git add .
           git commit -m "Publish Helm chart" || echo "No changes to commit"
