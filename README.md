@@ -183,3 +183,37 @@ import (
 ```
 
 No core files need to be modified, ensuring clean separation of concerns and compile-time decoupling.
+
+---
+
+## Roadmap & Future Features
+
+We plan to expand Kivert with the following production-grade features:
+
+### 🚀 1. Per-Pod Configurations via Annotations (Self-Service)
+Allow application developers to customize Kivert alerting behavior on a per-workload basis by annotating their workloads:
+- `kivert.io/restart-threshold`: Override the global restart threshold.
+- `kivert.io/cooldown-seconds`: Override the default cooldown window.
+- `kivert.io/mute`: Silence Kivert alerts entirely for a specific workload.
+- `kivert.io/channel`: Route alerts for a specific pod to a targeted alert channel.
+
+### 🔌 2. Native Slack & PagerDuty Channels
+Extend the pluggable registry pattern by shipping out-of-the-box support for:
+- **Slack**: Format alerts into rich Slack Block Kit layouts with status color bars, structured fields, and log attachments.
+- **PagerDuty**: Integrate with PagerDuty Events API v2 to trigger, update, and resolve incidents.
+
+### 🧹 3. Log Formatting & ANSI Escape Code Stripping
+Improve log readability in downstream channels:
+- Automatically strip ANSI color codes from terminal logs.
+- Detect and pretty-print JSON log lines or format stack traces before sending alerts.
+
+### 📢 4. Alert Aggregation & Rollup (Anti-Fatigue)
+To prevent alert fatigue in large-scale environments:
+- **Deployment-Level Summaries**: If multiple pods belonging to the same owner (e.g. `Deployment/payments-api`) crash-loop simultaneously (e.g. after a bad release), aggregate them into a single alert summary instead of flooding channels with separate messages.
+
+### 🔗 5. Direct Observability Links (Contextual Navigation)
+Provide rapid debugging context by embedding clickable links directly in the alert payloads:
+- Configure dynamic URL templates (e.g. `grafanaUrlTemplate: "https://grafana.corp/d/pods?var-pod={{.Pod}}"`).
+- Render and attach links to Grafana metrics, Kibana/Datadog logs, or cloud provider dashboards corresponding to the specific pod and namespace.
+
+
