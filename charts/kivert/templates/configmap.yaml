@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kivert.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    watch:
+      allNamespaces: {{ .Values.watch.allNamespaces }}
+      namespaces: {{ toJson .Values.watch.namespaces }}
+      excludeNamespaces: {{ toJson .Values.watch.excludeNamespaces }}
+      labelSelector: {{ .Values.watch.labelSelector | quote }}
+    alerting:
+      restartThreshold: {{ .Values.alerting.restartThreshold }}
+      cooldownSeconds: {{ .Values.alerting.cooldownSeconds }}
+      includeReasons: {{ toJson .Values.alerting.includeReasons }}
+      dryRun: {{ .Values.alerting.dryRun }}
+    logs:
+      enabled: {{ .Values.logs.enabled }}
+      tailLines: {{ .Values.logs.tailLines }}
+      previous: {{ .Values.logs.previous }}
+      limitBytes: {{ .Values.logs.limitBytes }}
+      timeoutSeconds: {{ .Values.logs.timeoutSeconds }}
+      includeInAlert: {{ .Values.logs.includeInAlert }}
+      redactPatterns: {{ toJson .Values.logs.redactPatterns }}
+    channels: {{ toJson .Values.channels }}
+    controller:
+      leaderElection: {{ .Values.controller.leaderElection }}
+      resyncPeriodSeconds: {{ .Values.controller.resyncPeriodSeconds }}
+      logLevel: {{ .Values.controller.logLevel | quote }}
+      metrics:
+        enabled: {{ .Values.controller.metrics.enabled }}
+        port: {{ .Values.controller.metrics.port }}

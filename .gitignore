@@ -1,0 +1,32 @@
+# Binaries
+bin/
+dist/
+
+# OS Specific
+.DS_Store
+.DS_Store?
+ehthumbs.db
+Thumbs.db
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Go specific
+go.work
+go.work.sum
+vendor/
+*.out
+*.test
+*.prof
+
+# Helm specific
+*.tgz
+.helm/
+
+# Local configuration overrides
+local-config.yaml
+*.local.yaml

@@ -1,0 +1,17 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "kivert.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kivert.selectorLabels" . | nindent 4 }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+{{- end }}

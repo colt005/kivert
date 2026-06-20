@@ -1,0 +1,18 @@
+{{- if .Values.controller.metrics.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kivert.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.controller.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "kivert.selectorLabels" . | nindent 4 }}
+{{- end }}

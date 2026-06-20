@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kivert.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kivert.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kivert.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "kivert.serviceAccountName" . }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--config=/etc/kivert/config.yaml"
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.controller.metrics.port }}
+              protocol: TCP
+            - name: probes
+              containerPort: 8081
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: probes
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: probes
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/kivert
+              readOnly: true
+            {{- range .Values.channels }}
+            {{- if and .enabled .config.authSecretRef }}
+            {{- if and .config.authSecretRef.name .config.authSecretRef.key }}
+            - name: secret-{{ .name }}
+              mountPath: /etc/kivert/secrets/{{ .config.authSecretRef.name }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "kivert.fullname" . }}
+        {{- range .Values.channels }}
+        {{- if and .enabled .config.authSecretRef }}
+        {{- if and .config.authSecretRef.name .config.authSecretRef.key }}
+        - name: secret-{{ .name }}
+          secret:
+            secretName: {{ .config.authSecretRef.name }}
+            items:
+              - key: {{ .config.authSecretRef.key }}
+                path: {{ .config.authSecretRef.key }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

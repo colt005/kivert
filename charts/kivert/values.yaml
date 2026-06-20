@@ -1,0 +1,72 @@
+watch:
+  allNamespaces: false
+  namespaces: [default]
+  excludeNamespaces: [kube-system]
+  labelSelector: ""
+
+alerting:
+  restartThreshold: 1
+  cooldownSeconds: 300
+  includeReasons: []        # empty = all
+  dryRun: false
+
+logs:
+  enabled: false            # opt-in; grants pods/log RBAC only when true
+  tailLines: 50
+  previous: true
+  limitBytes: 65536
+  timeoutSeconds: 5
+  includeInAlert: true
+  redactPatterns: []        # regexes; empty default
+
+channels:
+  - name: primary-webhook
+    type: webhook
+    enabled: true
+    config:
+      url: "http://httpbin.org/post"
+      method: POST
+      timeoutSeconds: 5
+      retries: 3
+      headers:
+        Content-Type: application/json
+      authSecretRef:
+        name: ""
+        key: token
+      template: ""
+
+controller:
+  leaderElection: true
+  resyncPeriodSeconds: 0
+  logLevel: info
+  metrics:
+    enabled: true
+    port: 8080
+
+image:
+  repository: ghcr.io/colt005/kivert
+  tag: ""                   # default to .Chart.AppVersion
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: ""
+
+rbac:
+  create: true
+
+serviceMonitor:
+  enabled: false
+
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+replicaCount: 1

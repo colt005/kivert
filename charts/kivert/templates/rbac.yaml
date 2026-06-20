@@ -1,0 +1,103 @@
+{{- if .Values.rbac.create }}
+# Leader election permissions in release namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "kivert.fullname" . }}-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "kivert.fullname" . }}-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "kivert.fullname" . }}-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kivert.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+---
+{{- if .Values.watch.allNamespaces }}
+# Cluster-wide role for watching all namespaces
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kivert.fullname" . }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  # Elevated privilege: Grant pods/log access ONLY when logs.enabled is true.
+  {{- if .Values.logs.enabled }}
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kivert.fullname" . }}
+  labels:
+    {{- include "kivert.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kivert.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kivert.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- else }}
+# Namespaced roles for watching specific namespaces
+{{- range .Values.watch.namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "kivert.fullname" $ }}
+  namespace: {{ . | quote }}
+  labels:
+    {{- include "kivert.labels" $ | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  # Elevated privilege: Grant pods/log access ONLY when logs.enabled is true.
+  {{- if $.Values.logs.enabled }}
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "kivert.fullname" $ }}
+  namespace: {{ . | quote }}
+  labels:
+    {{- include "kivert.labels" $ | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "kivert.fullname" $ }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kivert.serviceAccountName" $ }}
+    namespace: {{ $.Release.Namespace }}
+{{- end }}
+{{- end }}
+{{- end }}
