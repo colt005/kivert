@@ -12,6 +12,26 @@
 
 ---
 
+## Why Kivert over Prometheus?
+
+Kivert is **not** a replacement for Prometheus and Alertmanager. In fact, they are complementary. If you already have a mature Prometheus stack and only need a simple restart alert, a PromQL rule is likely enough. 
+
+However, Kivert shines in specific scenarios where standard metrics pipelines fall short:
+
+### 🌟 Where Kivert Wins
+- **Context-Rich Alerts:** A Prometheus counter just tells you a number went up. Kivert bundles the actual **termination reason, exit code, resolved owner (e.g., `Deployment/payments-api`), and the last 50 log lines of the crashed container** into a single, actionable alert.
+- **Real-Time Immediacy:** Prometheus relies on scraping intervals and rule evaluations, leading to alerts that fire minutes later. Kivert reacts to the Kubernetes API watch event instantly.
+- **Catching Ephemeral Crashes:** Pods that crash and recycle quickly between Prometheus scrape intervals can be missed, or their counters reset. Kivert’s watch-based model never misses a transition.
+- **Lightweight (No Heavy Stack):** If you don't run a full Prometheus + Alertmanager + kube-state-metrics stack, Kivert gives you instant restart alerts with a single, small Helm install.
+
+### 📊 Where Prometheus Wins
+- **Zero Extra Infrastructure:** If you already run Prometheus, adding a new rule is practically free.
+- **Mature Alert Routing:** Alertmanager handles complex grouping, silencing, inhibitions, and escalation paths. Kivert's dispatcher is simple and does not try to clone these features.
+- **Unified Monitoring Plane:** Prometheus acts as a single pane of glass for all signals (memory, CPU, disk, latency) and holds historical data.
+
+
+---
+
 ## Installation via Helm
 
 Install Kivert into the `kivert-system` namespace:
