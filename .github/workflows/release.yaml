@@ -17,6 +17,11 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -54,6 +59,11 @@ jobs:
     needs: build-and-push-image
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
