@@ -23,14 +23,14 @@ func init() {
 
 // WebhookAlerter sends alert JSON payloads to an external HTTP endpoint.
 type WebhookAlerter struct {
-	url         string
-	method      string
-	timeout     time.Duration
-	retries     int
-	headers     map[string]string
-	token       string
-	tmpl        *template.Template
-	client      *http.Client
+	url     string
+	method  string
+	timeout time.Duration
+	retries int
+	headers map[string]string
+	token   string
+	tmpl    *template.Template
+	client  *http.Client
 }
 
 // NewWebhookAlerter builds a WebhookAlerter from a configuration map.

@@ -14,7 +14,7 @@ type Alert struct {
 	RestartCount  int32     `json:"restartCount"`
 	Reason        string    `json:"reason"` // e.g. CrashLoopBackOff, OOMKilled, Error
 	ExitCode      int32     `json:"exitCode"`
-	Owner         string    `json:"owner"`  // resolved owner, e.g. "Deployment/payments-api"
+	Owner         string    `json:"owner"` // resolved owner, e.g. "Deployment/payments-api"
 	Message       string    `json:"message"`
 	Logs          string    `json:"logs,omitempty"`
 	LogsTruncated bool      `json:"logsTruncated,omitempty"`

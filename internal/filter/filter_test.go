@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/colt005/kivert/internal/alert"
 	"github.com/colt005/kivert/internal/config"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestFilter_ShouldAlert_Namespace(t *testing.T) {
@@ -26,9 +26,9 @@ func TestFilter_ShouldAlert_Namespace(t *testing.T) {
 		expected  bool
 	}{
 		{"prod", true},
-		{"staging", false}, // excluded
+		{"staging", false},     // excluded
 		{"kube-system", false}, // excluded
-		{"default", false}, // not in include list
+		{"default", false},     // not in include list
 	}
 
 	for _, tc := range tests {

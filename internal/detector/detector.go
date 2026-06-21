@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/colt005/kivert/internal/alert"
 	"github.com/colt005/kivert/internal/metrics"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // Detector processes Pod update events and detects container restarts.

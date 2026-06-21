@@ -127,9 +127,9 @@ func main() {
 		Metrics: metricsserver.Options{
 			BindAddress: fmt.Sprintf(":%d", cfg.Controller.Metrics.Port),
 		},
-		HealthProbeBindAddress: ":8081",
-		LeaderElection:         cfg.Controller.LeaderElection,
-		LeaderElectionID:       "kivert.kivert.io",
+		HealthProbeBindAddress:  ":8081",
+		LeaderElection:          cfg.Controller.LeaderElection,
+		LeaderElectionID:        "kivert.kivert.io",
 		LeaderElectionNamespace: getInstallNamespace(),
 	}
 
