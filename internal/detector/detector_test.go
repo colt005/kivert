@@ -92,7 +92,7 @@ func TestDetector_Detect(t *testing.T) {
 	}
 
 	// 4. Fourth run: restart count goes up to 4, but let's test a higher threshold
-	d2 := NewDetector(store, 2) // threshold of 2
+	d2 := NewDetector(store, 2)                      // threshold of 2
 	pod.Status.ContainerStatuses[0].RestartCount = 4 // delta is 1 (4 - 3)
 	alerts = d2.Detect(pod)
 	// Since delta is 1, and threshold is 2, it should NOT alert, but it SHOULD update the baseline to 4!

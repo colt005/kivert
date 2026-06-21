@@ -114,14 +114,14 @@ func Load() (*Config, error) {
 	// 1. Define command line flags.
 	var configPath string
 	flag.StringVar(&configPath, "config", "", "Path to config file (JSON or YAML).")
-	
+
 	// Temporarily define other flags for overrides.
 	flag.BoolVar(&cfg.Watch.AllNamespaces, "watch-all-namespaces", cfg.Watch.AllNamespaces, "Watch all namespaces.")
 	flag.Int64Var(&cfg.Logs.TailLines, "logs-tail-lines", cfg.Logs.TailLines, "Tail lines to fetch.")
 	flag.BoolVar(&cfg.Controller.LeaderElection, "leader-election", cfg.Controller.LeaderElection, "Enable leader election.")
 	flag.IntVar(&cfg.Controller.Metrics.Port, "metrics-port", cfg.Controller.Metrics.Port, "Port to expose metrics on.")
 	flag.StringVar(&cfg.Controller.LogLevel, "log-level", cfg.Controller.LogLevel, "Log level.")
-	
+
 	flag.Parse()
 
 	// Env var check for config path.

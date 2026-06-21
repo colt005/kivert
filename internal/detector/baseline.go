@@ -3,9 +3,9 @@ package detector
 import (
 	"sync"
 
+	"github.com/colt005/kivert/internal/metrics"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"github.com/colt005/kivert/internal/metrics"
 )
 
 type baselineKey struct {
@@ -70,7 +70,7 @@ func (s *BaselineStore) Seed(pods []corev1.Pod) {
 // seedPodNoLock populates baseline for a pod assuming mutex is already held.
 func (s *BaselineStore) seedPodNoLock(pod corev1.Pod) {
 	uid := pod.UID
-	
+
 	// Seed standard containers
 	for _, status := range pod.Status.ContainerStatuses {
 		s.store[baselineKey{uid: uid, container: status.Name}] = status.RestartCount

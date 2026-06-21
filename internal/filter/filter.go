@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/labels"
 	"github.com/colt005/kivert/internal/alert"
 	"github.com/colt005/kivert/internal/config"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 type cooldownKey struct {
@@ -21,11 +21,11 @@ type cooldownKey struct {
 // Filter evaluates whether an Alert should be sent based on namespace policies,
 // label selectors, reason filters, and cooldown periods.
 type Filter struct {
-	cfg        *config.Config
-	selector   labels.Selector
-	mu         sync.Mutex
-	cooldowns  map[cooldownKey]time.Time
-	gcCounter  int
+	cfg       *config.Config
+	selector  labels.Selector
+	mu        sync.Mutex
+	cooldowns map[cooldownKey]time.Time
+	gcCounter int
 }
 
 // NewFilter creates and initializes a Filter.

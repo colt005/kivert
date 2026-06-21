@@ -6,11 +6,11 @@ import (
 	"io"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/kubernetes"
 	"github.com/colt005/kivert/internal/alert"
 	"github.com/colt005/kivert/internal/config"
 	"github.com/colt005/kivert/internal/metrics"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/client-go/kubernetes"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
